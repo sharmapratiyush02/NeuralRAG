@@ -1,0 +1,5 @@
+# Introduction to Retrieval-Augmented Generation
+
+Retrieval-Augmented Generation, or RAG, improves language model answers by retrieving relevant documents before generating a response.
+
+Core components include document ingestion, chunking, neural embeddings, hybrid retrieval, reranking, grounded generation, and evaluation.

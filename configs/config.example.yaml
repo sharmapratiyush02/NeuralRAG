@@ -1,0 +1,199 @@
+# NeuralRAG System Configuration — EXAMPLE
+# ==========================================
+# Copy this file to configs/config.yaml and fill in your API keys.
+# DO NOT commit config.yaml — it is gitignored.
+#
+#   cp configs/config.example.yaml configs/config.yaml
+
+system:
+  name: "NeuralRAG"
+  version: "1.0.0"
+  environment: "development"  # development | production
+  log_level: "INFO"
+
+# ─── Embedding Models ───────────────────────────────────────────────────────
+embeddings:
+  # Primary dense embedding model
+  dense_model: "BAAI/bge-large-en-v1.5"       # 1024-dim, best open-source
+  dense_model_alt: "sentence-transformers/all-mpnet-base-v2"  # Fallback
+  
+  # Fine-tuned model path (after running fine_tune_embedder.py)
+  fine_tuned_path: "./models/fine_tuned_embedder"
+  use_fine_tuned: false
+  
+  # Embedding config
+  dimension: 1024
+  batch_size: 32
+  normalize: true
+  device: "cpu"  # cpu | cuda | mps
+  
+  # Sparse embeddings (BM25 parameters)
+  bm25_k1: 1.5
+  bm25_b: 0.75
+
+# ─── Vector Store ────────────────────────────────────────────────────────────
+vector_store:
+  primary: "chroma"       # chroma | faiss | qdrant
+  
+  chroma:
+    persist_directory: "./data/chroma_db"
+    collection_name: "neural_rag_docs"
+  
+  faiss:
+    index_path: "./data/faiss_index"
+    index_type: "IVFFlat"   # Flat | IVFFlat | HNSW
+    nlist: 100
+    nprobe: 10
+  
+  qdrant:
+    url: "http://localhost:6333"
+    collection_name: "neural_rag"
+
+# ─── Retrieval ───────────────────────────────────────────────────────────────
+retrieval:
+  # Hybrid search weights
+  dense_weight: 0.7
+  sparse_weight: 0.3
+  fusion_method: "rrf"    # rrf (reciprocal rank fusion) | weighted
+  
+  # How many docs to fetch before reranking
+  top_k_retrieval: 20
+  
+  # Final top-k after reranking
+  top_k_final: 5
+  
+  # Query rewriting
+  query_rewriting:
+    enabled: true
+    num_rewrites: 3
+    strategy: "hypothetical_document"  # hypothetical_document | multi_query | step_back
+  
+  # Contextual compression
+  compression:
+    enabled: true
+    method: "llm_lingua"  # llm_lingua | extractive
+
+# ─── Reranking ───────────────────────────────────────────────────────────────
+reranking:
+  enabled: true
+  method: "bge"            # bge | cohere | colbert
+  
+  bge:
+    model: "BAAI/bge-reranker-large"
+    batch_size: 16
+  
+  cohere:
+    api_key: "YOUR_COHERE_API_KEY_HERE"
+    model: "rerank-english-v3.0"
+  
+  colbert:
+    model: "colbert-ir/colbertv2.0"
+
+# ─── Generation (LLM) ────────────────────────────────────────────────────────
+generation:
+  # Primary LLM
+  model: "meta-llama/Meta-Llama-3-8B-Instruct"
+  
+  # Quantization for local deployment
+  quantization: "4bit"     # 4bit | 8bit | none
+  
+  # Alternative: API-based models (Groq / OpenAI compatible)
+  openai_model: "llama-3.3-70b-versatile"
+  use_api: true            # Set false to use local Llama
+  
+  # Generation parameters
+  max_tokens: 1024
+  temperature: 0.1
+  top_p: 0.9
+  
+  # Self-correction
+  self_correction:
+    enabled: true
+    max_iterations: 3
+    faithfulness_threshold: 0.7
+    
+  # Prompt templates
+  system_prompt: |
+    You are an expert research assistant. Answer questions based ONLY on the 
+    provided context. If the context doesn't contain enough information to 
+    answer confidently, say so explicitly. Never hallucinate facts.
+    
+    Always cite which document/chunk your answer comes from.
+
+# ─── Chunking ────────────────────────────────────────────────────────────────
+chunking:
+  strategy: "semantic"      # fixed | sentence | semantic | recursive
+  
+  fixed:
+    chunk_size: 512
+    chunk_overlap: 64
+  
+  semantic:
+    min_chunk_size: 200
+    max_chunk_size: 800
+    similarity_threshold: 0.8
+  
+  recursive:
+    separators: ["\n\n", "\n", ". ", " ", ""]
+    chunk_size: 512
+    chunk_overlap: 64
+
+# ─── Agentic RAG ─────────────────────────────────────────────────────────────
+agent:
+  enabled: true
+  max_steps: 10
+  tools:
+    - "retriever"
+    - "calculator"
+    - "web_search"
+    - "summarizer"
+    - "fact_checker"
+  
+  planning_strategy: "react"   # react | plan_and_execute | reflexion
+
+# ─── Multimodal ──────────────────────────────────────────────────────────────
+multimodal:
+  enabled: true
+  
+  image_embedding:
+    model: "openai/clip-vit-large-patch14"
+    dimension: 768
+  
+  image_captioning:
+    model: "Salesforce/blip2-opt-2.7b"
+    
+  vision_llm:
+    model: "llava-hf/llava-1.5-7b-hf"
+
+# ─── Evaluation ──────────────────────────────────────────────────────────────
+evaluation:
+  framework: "ragas"         # ragas | ares | custom
+  
+  ragas:
+    metrics:
+      - "faithfulness"
+      - "answer_relevancy"
+      - "context_precision"
+      - "context_recall"
+    llm: "gpt-4o-mini"
+    
+  test_dataset_path: "./data/evaluation/test_qa.json"
+  output_path: "./evaluation/results/"
+
+# ─── API Server ───────────────────────────────────────────────────────────────
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins: ["*"]
+  max_file_size_mb: 50
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+# ─── API Keys ────────────────────────────────────────────────────────────────
+# IMPORTANT: Replace with your actual keys. NEVER commit this file after editing.
+api_keys:
+  openai: "YOUR_OPENAI_OR_GROQ_API_KEY_HERE"
+  anthropic: "YOUR_ANTHROPIC_API_KEY_HERE"
+  cohere: "YOUR_COHERE_API_KEY_HERE"
+  huggingface: "YOUR_HUGGINGFACE_API_KEY_HERE"
