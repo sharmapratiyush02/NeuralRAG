@@ -1,0 +1,74 @@
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-wheel-metadata/
+
+# ─── Virtual Environments ────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+.env/
+ENV/
+
+# ─── Environment / Secrets ───────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+configs/config.yaml          # Contains API keys — copy from config.example.yaml
+configs/*.secret.yaml
+
+# ─── Data & Databases (too large for Git) ────────────────────────────────────
+data/chroma_db/              # ChromaDB vector store — regenerate by ingesting docs
+data/documents/              # Raw uploaded documents — don't commit user data
+data/evaluation/test_qa.json
+evaluation/results/
+
+# ─── ML Models (large binary files — use Git LFS or HuggingFace Hub) ─────────
+models/
+*.bin
+*.safetensors
+*.gguf
+*.ggml
+*.pt
+*.pth
+*.ckpt
+
+# ─── IDE & OS ─────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ─── Testing & Coverage ──────────────────────────────────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ─── Jupyter Notebooks (optional — remove if you want to commit them) ─────────
+# .ipynb_checkpoints/
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+.dockerignore
+
+# ─── Temporary Files ──────────────────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
+*.bak

@@ -1,0 +1,86 @@
+# NeuralRAG - Complete Requirements
+# ================================
+
+# Core ML / Deep Learning
+torch>=2.1.0
+transformers>=4.37.0
+sentence-transformers>=2.5.0
+accelerate>=0.26.0
+peft>=0.8.0                    # LoRA fine-tuning
+bitsandbytes>=0.42.0           # 4-bit quantization
+
+# Vector Stores
+faiss-cpu>=1.7.4               # Dense retrieval (use faiss-gpu if CUDA available)
+chromadb>=0.4.22               # Persistent vector store
+qdrant-client>=1.7.0           # Alternative vector DB
+
+# RAG Frameworks
+langchain>=0.1.9
+langchain-community>=0.0.24
+langchain-core>=0.1.27
+llama-index>=0.10.12
+llama-index-vector-stores-chroma>=0.1.4
+
+# Hybrid Search (Sparse + Dense)
+rank-bm25>=0.2.2               # BM25 sparse retrieval
+whoosh>=2.7.4                  # Full-text search
+elasticsearch>=8.12.0          # Optional: production sparse search
+
+# Reranking
+cohere>=4.47                   # Cohere reranker API
+FlagEmbedding>=1.2.5           # BGE reranker (local)
+
+# Document Processing
+pypdf>=4.0.0
+python-docx>=1.1.0
+unstructured>=0.12.4           # Multi-format parsing
+pytesseract>=0.3.10            # OCR for scanned PDFs
+Pillow>=10.2.0
+pdf2image>=1.17.0
+
+# Multimodal
+openai-clip>=1.0               # CLIP for image embeddings (pip install git+https://github.com/openai/CLIP.git)
+# llava dependencies handled separately
+
+# API & Backend
+fastapi>=0.109.2
+uvicorn>=0.27.1
+pydantic>=2.6.1
+python-multipart>=0.0.9
+aiofiles>=23.2.1
+httpx>=0.26.0
+
+# Evaluation
+ragas>=0.1.7                   # RAGAS evaluation framework
+datasets>=2.17.0               # Hugging Face datasets
+evaluate>=0.4.1
+
+# Query Processing
+nltk>=3.8.1
+spacy>=3.7.4
+# python -m spacy download en_core_web_sm
+
+# Utilities
+numpy>=1.26.3
+pandas>=2.2.0
+tqdm>=4.66.2
+rich>=13.7.0                   # Beautiful CLI output
+loguru>=0.7.2                  # Advanced logging
+python-dotenv>=1.0.1
+pyyaml>=6.0.1
+tenacity>=8.2.3                # Retry logic
+
+# Monitoring
+prometheus-client>=0.20.0
+opentelemetry-api>=1.22.0
+
+# Testing
+pytest>=8.0.2
+pytest-asyncio>=0.23.5
+pytest-cov>=4.1.0
+httpx>=0.26.0                  # For FastAPI testing
+
+# Development
+black>=24.2.0
+isort>=5.13.2
+mypy>=1.8.0
